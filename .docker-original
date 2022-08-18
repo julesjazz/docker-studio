@@ -1,0 +1,23 @@
+FROM node:18.7.0-alpine
+
+# set working directory
+WORKDIR /app
+
+# add `/app/node_modules/.bin` to $PATH
+ENV PATH /app/node_modules/.bin:$PATH
+
+# install app dependencies
+COPY package.json ./
+COPY package-lock.json ./
+RUN npm install -g @sanity/cli
+RUN npm install usehooks-ts@2.1.1
+
+# add app
+COPY . ./
+
+RUN sanity build
+
+EXPOSE 3333
+
+# start app
+CMD ["sanity", "start"]
